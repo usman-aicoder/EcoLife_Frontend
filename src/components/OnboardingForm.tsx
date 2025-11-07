@@ -4,7 +4,6 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import { Checkbox } from "./ui/checkbox";
 import { Progress } from "./ui/progress";
 import { X, ArrowRight, ArrowLeft, Sparkles, Leaf, TreePine, Globe, Loader2, AlertCircle } from "lucide-react";
 import { onboardingService } from "../services/onboarding";
@@ -36,8 +35,8 @@ interface FormData {
   dietPreference: string;
 
   // Meal Planning (Section 3)
-  allergies: string[];
-  medicalConditions: string[];
+  allergies: string;
+  medicalConditions: string;
   mealFrequency: string;
   cookingSkill: string;
   timeAvailable: string;
@@ -67,8 +66,8 @@ export function OnboardingForm({ onClose, onComplete }: OnboardingFormProps) {
     wellnessGoal: "",
     activityLevel: "",
     dietPreference: "",
-    allergies: [],
-    medicalConditions: [],
+    allergies: "",
+    medicalConditions: "",
     mealFrequency: "",
     cookingSkill: "",
     timeAvailable: "",
@@ -81,16 +80,6 @@ export function OnboardingForm({ onClose, onComplete }: OnboardingFormProps) {
 
   const updateFormData = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const toggleArrayField = (field: "allergies" | "medicalConditions", value: string) => {
-    setFormData((prev) => {
-      const currentArray = prev[field];
-      const newArray = currentArray.includes(value)
-        ? currentArray.filter(item => item !== value)
-        : [...currentArray, value];
-      return { ...prev, [field]: newArray };
-    });
   };
 
   const canProceed = () => {
@@ -165,8 +154,8 @@ export function OnboardingForm({ onClose, onComplete }: OnboardingFormProps) {
             activity_level: formData.activityLevel,
             wellness_goal: formData.wellnessGoal,
             dietary_preference: formData.dietPreference,
-            allergies: formData.allergies,
-            medical_conditions: formData.medicalConditions,
+            allergies: formData.allergies ? [formData.allergies] : [],
+            medical_conditions: formData.medicalConditions ? [formData.medicalConditions] : [],
             meal_frequency: formData.mealFrequency,
             cooking_skill: formData.cookingSkill,
             time_available: formData.timeAvailable,
@@ -800,26 +789,24 @@ export function OnboardingForm({ onClose, onComplete }: OnboardingFormProps) {
               </div>
               <p className="text-sm text-gray-500 text-center mb-6 italic">We'll make sure your meal plan avoids these!</p>
 
-              <div className="space-y-3">
+              <RadioGroup value={formData.allergies} onValueChange={(value) => updateFormData("allergies", value)} className="space-y-3">
                 {[
+                  { value: "none", label: "✅ No allergy" },
                   { value: "dairy", label: "🥛 Dairy" },
                   { value: "eggs", label: "🥚 Eggs" },
                   { value: "nuts", label: "🥜 Nuts" },
                   { value: "shellfish", label: "🦐 Shellfish" },
                   { value: "soy", label: "🫘 Soy" },
                   { value: "gluten", label: "🌾 Gluten" },
-                ].map((option, index) => {
-                  const isChecked = formData.allergies.includes(option.value);
-                  return (
-                    <motion.div key={option.value} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + index * 0.05 }} whileHover={{ scale: 1.02, x: 5 }} whileTap={{ scale: 0.98 }}>
-                      <Label htmlFor={`allergy-${option.value}`} className={`flex items-center space-x-3 p-4 rounded-2xl border-2 transition-all cursor-pointer ${isChecked ? "border-teal-500 bg-teal-100 shadow-md" : "border-teal-200/50 hover:border-teal-400 bg-white/80"}`}>
-                        <Checkbox id={`allergy-${option.value}`} checked={isChecked} onCheckedChange={() => toggleArrayField("allergies", option.value)} />
-                        <span className="flex-1">{option.label}</span>
-                      </Label>
-                    </motion.div>
-                  );
-                })}
-              </div>
+                ].map((option, index) => (
+                  <motion.div key={option.value} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + index * 0.05 }} whileHover={{ scale: 1.02, x: 5 }} whileTap={{ scale: 0.98 }}>
+                    <Label htmlFor={option.value} className={`flex items-center space-x-3 p-4 rounded-2xl border-2 transition-all cursor-pointer ${formData.allergies === option.value ? "border-teal-500 bg-teal-100 shadow-md" : "border-teal-200/50 hover:border-teal-400 bg-white/80"}`}>
+                      <RadioGroupItem value={option.value} id={option.value} />
+                      <span className="flex-1">{option.label}</span>
+                    </Label>
+                  </motion.div>
+                ))}
+              </RadioGroup>
             </div>
           </motion.div>
         );
@@ -838,26 +825,24 @@ export function OnboardingForm({ onClose, onComplete }: OnboardingFormProps) {
               </div>
               <p className="text-sm text-gray-500 text-center mb-6 italic">Helps us provide safer, more personalized recommendations.</p>
 
-              <div className="space-y-3">
+              <RadioGroup value={formData.medicalConditions} onValueChange={(value) => updateFormData("medicalConditions", value)} className="space-y-3">
                 {[
+                  { value: "none", label: "✅ No disease" },
                   { value: "diabetes", label: "💉 Diabetes" },
                   { value: "hypertension", label: "💓 High Blood Pressure" },
                   { value: "celiac", label: "🌾 Celiac Disease" },
                   { value: "ibs", label: "🩺 IBS / Digestive Issues" },
                   { value: "heart", label: "❤️ Heart Condition" },
                   { value: "kidney", label: "🫘 Kidney Disease" },
-                ].map((option, index) => {
-                  const isChecked = formData.medicalConditions.includes(option.value);
-                  return (
-                    <motion.div key={option.value} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + index * 0.05 }} whileHover={{ scale: 1.02, x: 5 }} whileTap={{ scale: 0.98 }}>
-                      <Label htmlFor={`condition-${option.value}`} className={`flex items-center space-x-3 p-4 rounded-2xl border-2 transition-all cursor-pointer ${isChecked ? "border-teal-500 bg-teal-100 shadow-md" : "border-teal-200/50 hover:border-teal-400 bg-white/80"}`}>
-                        <Checkbox id={`condition-${option.value}`} checked={isChecked} onCheckedChange={() => toggleArrayField("medicalConditions", option.value)} />
-                        <span className="flex-1">{option.label}</span>
-                      </Label>
-                    </motion.div>
-                  );
-                })}
-              </div>
+                ].map((option, index) => (
+                  <motion.div key={option.value} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + index * 0.05 }} whileHover={{ scale: 1.02, x: 5 }} whileTap={{ scale: 0.98 }}>
+                    <Label htmlFor={option.value} className={`flex items-center space-x-3 p-4 rounded-2xl border-2 transition-all cursor-pointer ${formData.medicalConditions === option.value ? "border-teal-500 bg-teal-100 shadow-md" : "border-teal-200/50 hover:border-teal-400 bg-white/80"}`}>
+                      <RadioGroupItem value={option.value} id={option.value} />
+                      <span className="flex-1">{option.label}</span>
+                    </Label>
+                  </motion.div>
+                ))}
+              </RadioGroup>
             </div>
           </motion.div>
         );
@@ -907,6 +892,7 @@ export function OnboardingForm({ onClose, onComplete }: OnboardingFormProps) {
                   { value: "beginner", label: "🥄 Beginner" },
                   { value: "intermediate", label: "🔪 Intermediate" },
                   { value: "advanced", label: "👨‍🍳 Advanced" },
+                  { value: "order-food", label: "🍕 Order food" },
                 ].map((option, index) => (
                   <motion.div key={option.value} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + index * 0.05 }} whileHover={{ scale: 1.02, x: 5 }} whileTap={{ scale: 0.98 }}>
                     <Label htmlFor={option.value} className={`flex items-center space-x-3 p-4 rounded-2xl border-2 transition-all cursor-pointer ${formData.cookingSkill === option.value ? "border-teal-500 bg-teal-100 shadow-md" : "border-teal-200/50 hover:border-teal-400 bg-white/80"}`}>

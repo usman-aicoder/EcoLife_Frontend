@@ -4,6 +4,8 @@ import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Progress } from "./ui/progress";
 import { AssistantSubscription } from "./AssistantSubscription";
+import { WeeklyDietChart } from "./WeeklyDietChart";
+import HealthInsightsModal from "./HealthInsightsModal";
 import {
   Leaf,
   Heart,
@@ -42,6 +44,8 @@ export function Dashboard({ userName, onLogout }: DashboardProps) {
   const [mealChecked, setMealChecked] = useState([false, false, false]);
   const [activityComplete, setActivityComplete] = useState(false);
   const [showAssistantSubscription, setShowAssistantSubscription] = useState(false);
+  const [showWeeklyDietChart, setShowWeeklyDietChart] = useState(false);
+  const [showHealthInsights, setShowHealthInsights] = useState(false);
 
   // Backend integration states
   const [isLoading, setIsLoading] = useState(true);
@@ -59,7 +63,12 @@ export function Dashboard({ userName, onLogout }: DashboardProps) {
   // Activity/Steps state
   const [todayActivity, setTodayActivity] = useState<ActivityData | null>(null);
   const [stepsInput, setStepsInput] = useState<string>("");
+  const [durationInput, setDurationInput] = useState<string>("");
+  const [activityType, setActivityType] = useState<string>("walking");
   const [isSavingSteps, setIsSavingSteps] = useState(false);
+
+  // Check if current activity is time-based (not step-based)
+  const isTimeBased = ["cycling", "gym", "swimming", "football", "other_sports"].includes(activityType);
 
   // Fetch dashboard data from backend
   useEffect(() => {
@@ -140,6 +149,14 @@ export function Dashboard({ userName, onLogout }: DashboardProps) {
         if (activity && activity.steps !== null && activity.steps > 0) {
           setStepsInput(activity.steps.toString());
         }
+        // Set the duration field if it exists
+        if (activity && activity.duration_minutes !== null && activity.duration_minutes > 0) {
+          setDurationInput(activity.duration_minutes.toString());
+        }
+        // Set activity type if it exists
+        if (activity && activity.activity_type) {
+          setActivityType(activity.activity_type);
+        }
       } catch (err: any) {
         console.error("Failed to fetch today's activity:", err);
         // If error, keep default state
@@ -149,35 +166,64 @@ export function Dashboard({ userName, onLogout }: DashboardProps) {
     fetchTodayActivity();
   }, []);
 
-  // Handler for saving steps
+  // Handler for saving activity
   const handleSaveSteps = async () => {
-    const steps = parseInt(stepsInput);
+    const isTimeBased = ["cycling", "gym", "swimming", "football", "other_sports"].includes(activityType);
 
-    if (isNaN(steps) || steps < 0) {
-      alert("Please enter a valid number of steps");
-      return;
-    }
+    if (isTimeBased) {
+      // Handle time-based activities
+      const duration = parseInt(durationInput);
+      if (isNaN(duration) || duration < 0) {
+        alert("Please enter a valid duration in minutes");
+        return;
+      }
 
-    setIsSavingSteps(true);
-    try {
-      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+      setIsSavingSteps(true);
+      try {
+        const today = new Date().toISOString().split('T')[0];
 
-      const response = await activityService.addSteps({
-        date: today,
-        steps: steps,
-        activity_type: "walking"
-      });
+        // Use the activity endpoint with duration for time-based activities
+        const response = await activityService.addSteps({
+          date: today,
+          steps: 0, // Set steps to 0 for time-based activities
+          activity_type: activityType,
+          duration_minutes: duration
+        });
 
-      // Update the activity data
-      setTodayActivity(response.activity);
+        setTodayActivity(response.activity);
+        console.log("Activity saved successfully");
+      } catch (err: any) {
+        console.error("Failed to save activity:", err);
+        alert("Failed to save activity. Please try again.");
+      } finally {
+        setIsSavingSteps(false);
+      }
+    } else {
+      // Handle step-based activities
+      const steps = parseInt(stepsInput);
+      if (isNaN(steps) || steps < 0) {
+        alert("Please enter a valid number of steps");
+        return;
+      }
 
-      // Show success message (optional)
-      console.log(response.message);
-    } catch (err: any) {
-      console.error("Failed to save steps:", err);
-      alert("Failed to save steps. Please try again.");
-    } finally {
-      setIsSavingSteps(false);
+      setIsSavingSteps(true);
+      try {
+        const today = new Date().toISOString().split('T')[0];
+
+        const response = await activityService.addSteps({
+          date: today,
+          steps: steps,
+          activity_type: activityType
+        });
+
+        setTodayActivity(response.activity);
+        console.log(response.message);
+      } catch (err: any) {
+        console.error("Failed to save steps:", err);
+        alert("Failed to save steps. Please try again.");
+      } finally {
+        setIsSavingSteps(false);
+      }
     }
   };
 
@@ -361,7 +407,7 @@ export function Dashboard({ userName, onLogout }: DashboardProps) {
         >
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-3xl" />
-          
+
           <div className="relative z-10">
             <div className="flex items-start justify-between mb-4">
               <div>
@@ -373,7 +419,7 @@ export function Dashboard({ userName, onLogout }: DashboardProps) {
                 <div className="text-sm text-green-100">Day Streak 🔥</div>
               </div>
             </div>
-            
+
             <div className="mt-6">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-green-100">Overall Progress</span>
@@ -547,34 +593,67 @@ export function Dashboard({ userName, onLogout }: DashboardProps) {
                   </div>
                   <div>
                     <h3 className="text-xl text-green-900">Daily Activity</h3>
-                    <p className="text-sm text-green-600">Track your walking steps</p>
+                    <p className="text-sm text-green-600">Track your daily activity</p>
                   </div>
                 </div>
 
-                {/* Steps Input Field */}
+                {/* Activity Type Selector */}
+                <div className="mb-4">
+                  <label className="block text-sm text-green-700 mb-2 font-medium">
+                    Activity Type
+                  </label>
+                  <select
+                    value={activityType}
+                    onChange={(e) => setActivityType(e.target.value)}
+                    className="w-full px-4 py-3 border border-green-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-green-900 bg-white"
+                  >
+                    <option value="walking">🚶 Walking</option>
+                    <option value="running">🏃 Running</option>
+                    <option value="jogging">🏃‍♂️ Jogging</option>
+                    <option value="cycling">🚴 Cycling</option>
+                    <option value="gym">💪 Gym Exercise</option>
+                    <option value="swimming">🏊 Swimming</option>
+                    <option value="football">⚽ Football</option>
+                    <option value="other_sports">🏅 Other Sports</option>
+                  </select>
+                </div>
+
+                {/* Activity Input Field - Steps or Duration */}
                 <div className="mb-6">
                   <label className="block text-sm text-green-700 mb-2 font-medium">
-                    Daily Steps
+                    {isTimeBased ? "Duration (minutes)" : "Steps Count"}
                   </label>
                   <div className="flex gap-2">
-                    <input
-                      type="number"
-                      value={stepsInput}
-                      onChange={(e) => setStepsInput(e.target.value)}
-                      placeholder="Enter your steps"
-                      className="flex-1 px-4 py-3 border border-green-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-green-900"
-                      min="0"
-                      max="100000"
-                    />
+                    {isTimeBased ? (
+                      <input
+                        type="number"
+                        value={durationInput}
+                        onChange={(e) => setDurationInput(e.target.value)}
+                        placeholder="Enter duration in minutes"
+                        className="flex-1 px-4 py-3 border border-green-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-green-900"
+                        min="0"
+                        max="1440"
+                      />
+                    ) : (
+                      <input
+                        type="number"
+                        value={stepsInput}
+                        onChange={(e) => setStepsInput(e.target.value)}
+                        placeholder="Enter your steps"
+                        className="flex-1 px-4 py-3 border border-green-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-green-900"
+                        min="0"
+                        max="100000"
+                      />
+                    )}
                     <Button
                       onClick={handleSaveSteps}
-                      disabled={isSavingSteps || !stepsInput}
+                      disabled={isSavingSteps || (isTimeBased ? !durationInput : !stepsInput)}
                       className="px-6 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
                     >
                       {isSavingSteps ? (
                         <Loader2 className="w-5 h-5 animate-spin" />
                       ) : (
-                        "Save"
+                        "Update"
                       )}
                     </Button>
                   </div>
@@ -721,11 +800,19 @@ export function Dashboard({ userName, onLogout }: DashboardProps) {
               <Card className="p-6 bg-white/80 backdrop-blur-sm border-green-100">
                 <h3 className="text-xl text-green-900 mb-4">Quick Actions</h3>
                 <div className="space-y-3">
-                  <Button variant="outline" className="w-full justify-start rounded-full border-green-200 hover:bg-green-50">
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start rounded-full border-green-200 hover:bg-green-50"
+                    onClick={() => setShowWeeklyDietChart(true)}
+                  >
                     <Calendar className="w-5 h-5 mr-2 text-green-600" />
                     View Full Week
                   </Button>
-                  <Button variant="outline" className="w-full justify-start rounded-full border-green-200 hover:bg-green-50">
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start rounded-full border-green-200 hover:bg-green-50"
+                    onClick={() => setShowHealthInsights(true)}
+                  >
                     <Heart className="w-5 h-5 mr-2 text-green-600" />
                     Health Insights
                   </Button>
@@ -764,6 +851,23 @@ export function Dashboard({ userName, onLogout }: DashboardProps) {
       <AnimatePresence>
         {showAssistantSubscription && (
           <AssistantSubscription onClose={() => setShowAssistantSubscription(false)} />
+        )}
+      </AnimatePresence>
+
+      {/* Weekly Diet Chart Modal */}
+      <AnimatePresence>
+        {showWeeklyDietChart && (
+          <WeeklyDietChart onClose={() => setShowWeeklyDietChart(false)} />
+        )}
+      </AnimatePresence>
+
+      {/* Health Insights Modal */}
+      <AnimatePresence>
+        {showHealthInsights && (
+          <HealthInsightsModal
+            isOpen={showHealthInsights}
+            onClose={() => setShowHealthInsights(false)}
+          />
         )}
       </AnimatePresence>
     </div>

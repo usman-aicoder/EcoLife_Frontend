@@ -40,6 +40,7 @@ export interface AddStepsRequest {
   date: string;
   steps: number;
   activity_type?: string;
+  duration_minutes?: number;
 }
 
 export interface AddStepsResponse {

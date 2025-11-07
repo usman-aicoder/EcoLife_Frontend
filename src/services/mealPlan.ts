@@ -148,6 +148,60 @@ class MealPlanService {
   async deleteMealPlan(mealPlanId: number): Promise<void> {
     await apiClient.delete(`/meal-plans/${mealPlanId}`);
   }
+
+  /**
+   * Update an existing meal plan with edited meals
+   */
+  async updateMealPlan(mealPlanId: number, updatedMeals: DayMeals[]): Promise<MealPlan> {
+    const response = await apiClient.put<MealPlan>(
+      `/meal-plans/${mealPlanId}`,
+      { meals: updatedMeals }
+    );
+    return response.data;
+  }
+
+  /**
+   * Swap a single meal in the meal plan
+   */
+  async swapMeal(
+    mealPlanId: number,
+    dayIndex: number,
+    mealType: 'breakfast' | 'lunch' | 'dinner',
+    newMeal: MealDetail
+  ): Promise<MealPlan> {
+    const response = await apiClient.post<MealPlan>(
+      `/meal-plans/${mealPlanId}/swap-meal`,
+      {
+        day_index: dayIndex,
+        meal_type: mealType,
+        new_meal: newMeal
+      }
+    );
+    return response.data;
+  }
+
+  /**
+   * Get alternative meals for swapping
+   */
+  async getAlternatives(
+    mealType: 'breakfast' | 'lunch' | 'dinner',
+    dietaryPreference: string = 'balanced',
+    excludeNames: string[] = []
+  ): Promise<{ alternatives: MealDetail[]; meal_type: string; count: number }> {
+    const params = new URLSearchParams({
+      meal_type: mealType,
+      dietary_preference: dietaryPreference,
+    });
+
+    if (excludeNames.length > 0) {
+      params.append('exclude_names', excludeNames.join(','));
+    }
+
+    const response = await apiClient.get<{ alternatives: MealDetail[]; meal_type: string; count: number }>(
+      `/meal-plans/alternatives?${params.toString()}`
+    );
+    return response.data;
+  }
 }
 
 export const mealPlanService = new MealPlanService();
