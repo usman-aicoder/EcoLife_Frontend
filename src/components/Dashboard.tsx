@@ -459,9 +459,21 @@ export function Dashboard({ userName, onLogout }: DashboardProps) {
                       variant="outline"
                       size="sm"
                       className="text-green-600 border-green-300 hover:bg-green-50"
-                      onClick={() => {
-                        // TODO: Open meal plan generation modal
-                        alert("Meal plan generation coming soon! Use the API endpoint at /meal-plans/generate");
+                      onClick={async () => {
+                        try {
+                          setMealPlanLoading(true);
+                          // Regenerate meal plan synchronously
+                          const newPlan = await mealPlanService.regenerateMealPlan({});
+                          console.log("Meal plan generated:", newPlan);
+                          // Fetch today's meal plan
+                          const mealPlan = await mealPlanService.getTodaysMealPlan();
+                          setTodaysMealPlan(mealPlan);
+                        } catch (err: any) {
+                          console.error("Failed to generate meal plan:", err);
+                          alert("Failed to generate meal plan. Please try again.");
+                        } finally {
+                          setMealPlanLoading(false);
+                        }
                       }}
                     >
                       <Sparkles className="w-4 h-4 mr-1" />

@@ -332,11 +332,10 @@ export function OnboardingForm({ onClose, onComplete }: OnboardingFormProps) {
               
               <RadioGroup value={formData.transportation} onValueChange={(value) => updateFormData("transportation", value)} className="space-y-3">
                 {[
-                  { value: "walk", label: "🚶‍♀️ Walk" },
-                  { value: "bike", label: "🚲 Bike" },
+                  { value: "walk", label: "🚶 Walk or cycle" },
                   { value: "public", label: "🚌 Public transport" },
-                  { value: "drive", label: "🚗 Drive" },
-                  { value: "fly", label: "✈️ Fly often" },
+                  { value: "drive", label: "🚗 Drive a car" },
+                  { value: "fly", label: "✈️ Fly often for travel" },
                 ].map((option, index) => (
                   <motion.div key={option.value} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + index * 0.05 }} whileHover={{ scale: 1.02, x: 5 }} whileTap={{ scale: 0.98 }}>
                     <Label htmlFor={option.value} className={`flex items-center space-x-3 p-4 rounded-2xl border-2 transition-all cursor-pointer ${formData.transportation === option.value ? "border-green-500 bg-green-100 shadow-md" : "border-green-200/50 hover:border-green-400 bg-white/80"}`}>
@@ -393,9 +392,10 @@ export function OnboardingForm({ onClose, onComplete }: OnboardingFormProps) {
               
               <RadioGroup value={formData.shopping} onValueChange={(value) => updateFormData("shopping", value)} className="space-y-3">
                 {[
-                  { value: "thrift", label: "♻️ Thrift or reuse" },
-                  { value: "few-items", label: "🧺 A few new items monthly" },
-                  { value: "regular", label: "🛍️ I shop regularly" },
+                  { value: "thrift", label: "♻️ Thrift or reuse items" },
+                  { value: "occasional", label: "👕 Occasionally buy new" },
+                  { value: "regular", label: "🛍️ Shop regularly" },
+                  { value: "premium", label: "💎 Buy premium/fashion items often" },
                 ].map((option, index) => (
                   <motion.div key={option.value} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + index * 0.05 }} whileHover={{ scale: 1.02, x: 5 }} whileTap={{ scale: 0.98 }}>
                     <Label htmlFor={option.value} className={`flex items-center space-x-3 p-4 rounded-2xl border-2 transition-all cursor-pointer ${formData.shopping === option.value ? "border-green-500 bg-green-100 shadow-md" : "border-green-200/50 hover:border-green-400 bg-white/80"}`}>
@@ -422,9 +422,10 @@ export function OnboardingForm({ onClose, onComplete }: OnboardingFormProps) {
               
               <RadioGroup value={formData.recycling} onValueChange={(value) => updateFormData("recycling", value)} className="space-y-3">
                 {[
-                  { value: "yes", label: "✅ Yes, regularly" },
+                  { value: "always", label: "✅ Always" },
                   { value: "sometimes", label: "🔄 Sometimes" },
-                  { value: "no", label: "🚫 Not really" },
+                  { value: "rarely", label: "🚫 Rarely" },
+                  { value: "never", label: "❌ Never" },
                 ].map((option, index) => (
                   <motion.div key={option.value} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + index * 0.05 }} whileHover={{ scale: 1.02, x: 5 }} whileTap={{ scale: 0.98 }}>
                     <Label htmlFor={option.value} className={`flex items-center space-x-3 p-4 rounded-2xl border-2 transition-all cursor-pointer ${formData.recycling === option.value ? "border-green-500 bg-green-100 shadow-md" : "border-green-200/50 hover:border-green-400 bg-white/80"}`}>
@@ -481,9 +482,10 @@ export function OnboardingForm({ onClose, onComplete }: OnboardingFormProps) {
               
               <RadioGroup value={formData.homeEnergy} onValueChange={(value) => updateFormData("homeEnergy", value)} className="space-y-3">
                 {[
-                  { value: "renewable", label: "☀️ Solar or renewable" },
-                  { value: "mixed", label: "💡 Mixed energy" },
-                  { value: "grid", label: "⚡ Mostly grid electricity" },
+                  { value: "renewable", label: "☀️ Mostly renewable (solar/wind)" },
+                  { value: "mixed", label: "💡 Mix of renewable and grid" },
+                  { value: "grid", label: "⚡ Mainly grid electricity" },
+                  { value: "unknown", label: "🔌 Don't know / not sure" },
                 ].map((option, index) => (
                   <motion.div key={option.value} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + index * 0.05 }} whileHover={{ scale: 1.02, x: 5 }} whileTap={{ scale: 0.98 }}>
                     <Label htmlFor={option.value} className={`flex items-center space-x-3 p-4 rounded-2xl border-2 transition-all cursor-pointer ${formData.homeEnergy === option.value ? "border-green-500 bg-green-100 shadow-md" : "border-green-200/50 hover:border-green-400 bg-white/80"}`}>
@@ -510,9 +512,10 @@ export function OnboardingForm({ onClose, onComplete }: OnboardingFormProps) {
               
               <RadioGroup value={formData.paperDigital} onValueChange={(value) => updateFormData("paperDigital", value)} className="space-y-3">
                 {[
-                  { value: "digital", label: "💻 Digital all the way" },
-                  { value: "both", label: "🧾 I still use both" },
-                  { value: "paper", label: "📄 Mostly paper" },
+                  { value: "fully-digital", label: "💻 Fully digital" },
+                  { value: "mostly-digital", label: "📲 Mostly digital" },
+                  { value: "both", label: "🧾 Use both equally" },
+                  { value: "mostly-paper", label: "📄 Mostly paper" },
                 ].map((option, index) => (
                   <motion.div key={option.value} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + index * 0.05 }} whileHover={{ scale: 1.02, x: 5 }} whileTap={{ scale: 0.98 }}>
                     <Label htmlFor={option.value} className={`flex items-center space-x-3 p-4 rounded-2xl border-2 transition-all cursor-pointer ${formData.paperDigital === option.value ? "border-green-500 bg-green-100 shadow-md" : "border-green-200/50 hover:border-green-400 bg-white/80"}`}>
@@ -599,7 +602,8 @@ export function OnboardingForm({ onClose, onComplete }: OnboardingFormProps) {
                 {[
                   { value: "male", label: "♂️ Male" },
                   { value: "female", label: "♀️ Female" },
-                  { value: "other", label: "⚧️ Prefer not to say" },
+                  { value: "non-binary", label: "⚧️ Non-binary / Other" },
+                  { value: "prefer-not-to-say", label: "🙊 Prefer not to say" },
                 ].map((option, index) => (
                   <motion.div key={option.value} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + index * 0.05 }} whileHover={{ scale: 1.02, x: 5 }} whileTap={{ scale: 0.98 }}>
                     <Label htmlFor={option.value} className={`flex items-center space-x-3 p-4 rounded-2xl border-2 transition-all cursor-pointer ${formData.gender === option.value ? "border-emerald-500 bg-emerald-100 shadow-md" : "border-emerald-200/50 hover:border-emerald-400 bg-white/80"}`}>
@@ -728,7 +732,8 @@ export function OnboardingForm({ onClose, onComplete }: OnboardingFormProps) {
               <RadioGroup value={formData.activityLevel} onValueChange={(value) => updateFormData("activityLevel", value)} className="space-y-3">
                 {[
                   { value: "sedentary", label: "🛋️ Mostly sitting" },
-                  { value: "active", label: "🚶 A bit active" },
+                  { value: "lightly-active", label: "🚶 Lightly active" },
+                  { value: "moderately-active", label: "🏋️ Moderately active" },
                   { value: "very-active", label: "🏃‍♂️ Very active" },
                 ].map((option, index) => (
                   <motion.div key={option.value} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + index * 0.05 }} whileHover={{ scale: 1.02, x: 5 }} whileTap={{ scale: 0.98 }}>
@@ -758,8 +763,8 @@ export function OnboardingForm({ onClose, onComplete }: OnboardingFormProps) {
                 {[
                   { value: "vegan", label: "🥗 Vegan" },
                   { value: "vegetarian", label: "🌾 Vegetarian" },
-                  { value: "non-veg", label: "🍗 Non-veg" },
-                  { value: "custom", label: "🧩 Custom diet" },
+                  { value: "non-vegetarian", label: "🍗 Non-vegetarian" },
+                  { value: "other", label: "🧩 Other / custom diet" },
                 ].map((option, index) => (
                   <motion.div key={option.value} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + index * 0.05 }} whileHover={{ scale: 1.02, x: 5 }} whileTap={{ scale: 0.98 }}>
                     <Label htmlFor={option.value} className={`flex items-center space-x-3 p-4 rounded-2xl border-2 transition-all cursor-pointer ${formData.dietPreference === option.value ? "border-emerald-500 bg-emerald-100 shadow-md" : "border-emerald-200/50 hover:border-emerald-400 bg-white/80"}`}>
@@ -791,13 +796,10 @@ export function OnboardingForm({ onClose, onComplete }: OnboardingFormProps) {
 
               <RadioGroup value={formData.allergies} onValueChange={(value) => updateFormData("allergies", value)} className="space-y-3">
                 {[
-                  { value: "none", label: "✅ No allergy" },
-                  { value: "dairy", label: "🥛 Dairy" },
-                  { value: "eggs", label: "🥚 Eggs" },
-                  { value: "nuts", label: "🥜 Nuts" },
-                  { value: "shellfish", label: "🦐 Shellfish" },
-                  { value: "soy", label: "🫘 Soy" },
-                  { value: "gluten", label: "🌾 Gluten" },
+                  { value: "none", label: "✅ None" },
+                  { value: "dairy-eggs", label: "🥛 Dairy / Eggs" },
+                  { value: "nuts-soy", label: "🥜 Nuts / Soy" },
+                  { value: "gluten-shellfish", label: "🌾 Gluten / Shellfish" },
                 ].map((option, index) => (
                   <motion.div key={option.value} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + index * 0.05 }} whileHover={{ scale: 1.02, x: 5 }} whileTap={{ scale: 0.98 }}>
                     <Label htmlFor={option.value} className={`flex items-center space-x-3 p-4 rounded-2xl border-2 transition-all cursor-pointer ${formData.allergies === option.value ? "border-teal-500 bg-teal-100 shadow-md" : "border-teal-200/50 hover:border-teal-400 bg-white/80"}`}>
@@ -827,13 +829,10 @@ export function OnboardingForm({ onClose, onComplete }: OnboardingFormProps) {
 
               <RadioGroup value={formData.medicalConditions} onValueChange={(value) => updateFormData("medicalConditions", value)} className="space-y-3">
                 {[
-                  { value: "none", label: "✅ No disease" },
-                  { value: "diabetes", label: "💉 Diabetes" },
-                  { value: "hypertension", label: "💓 High Blood Pressure" },
-                  { value: "celiac", label: "🌾 Celiac Disease" },
-                  { value: "ibs", label: "🩺 IBS / Digestive Issues" },
-                  { value: "heart", label: "❤️ Heart Condition" },
-                  { value: "kidney", label: "🫘 Kidney Disease" },
+                  { value: "none", label: "✅ None" },
+                  { value: "diabetes-bp", label: "💉 Diabetes / High BP" },
+                  { value: "heart-kidney", label: "❤️ Heart / Kidney issues" },
+                  { value: "digestive-celiac", label: "🩺 Digestive / Celiac issues" },
                 ].map((option, index) => (
                   <motion.div key={option.value} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + index * 0.05 }} whileHover={{ scale: 1.02, x: 5 }} whileTap={{ scale: 0.98 }}>
                     <Label htmlFor={option.value} className={`flex items-center space-x-3 p-4 rounded-2xl border-2 transition-all cursor-pointer ${formData.medicalConditions === option.value ? "border-teal-500 bg-teal-100 shadow-md" : "border-teal-200/50 hover:border-teal-400 bg-white/80"}`}>
@@ -862,7 +861,8 @@ export function OnboardingForm({ onClose, onComplete }: OnboardingFormProps) {
                 {[
                   { value: "2-meals", label: "🍴 2 meals" },
                   { value: "3-meals", label: "🍽️ 3 meals" },
-                  { value: "4-5-meals", label: "🥘 4-5 small meals" },
+                  { value: "4-5-meals", label: "🥘 4–5 small meals" },
+                  { value: "flexible", label: "🧃 Flexible / varies daily" },
                 ].map((option, index) => (
                   <motion.div key={option.value} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + index * 0.05 }} whileHover={{ scale: 1.02, x: 5 }} whileTap={{ scale: 0.98 }}>
                     <Label htmlFor={option.value} className={`flex items-center space-x-3 p-4 rounded-2xl border-2 transition-all cursor-pointer ${formData.mealFrequency === option.value ? "border-teal-500 bg-teal-100 shadow-md" : "border-teal-200/50 hover:border-teal-400 bg-white/80"}`}>
@@ -892,7 +892,7 @@ export function OnboardingForm({ onClose, onComplete }: OnboardingFormProps) {
                   { value: "beginner", label: "🥄 Beginner" },
                   { value: "intermediate", label: "🔪 Intermediate" },
                   { value: "advanced", label: "👨‍🍳 Advanced" },
-                  { value: "order-food", label: "🍕 Order food" },
+                  { value: "prefer-takeout", label: "🍕 Prefer takeout" },
                 ].map((option, index) => (
                   <motion.div key={option.value} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + index * 0.05 }} whileHover={{ scale: 1.02, x: 5 }} whileTap={{ scale: 0.98 }}>
                     <Label htmlFor={option.value} className={`flex items-center space-x-3 p-4 rounded-2xl border-2 transition-all cursor-pointer ${formData.cookingSkill === option.value ? "border-teal-500 bg-teal-100 shadow-md" : "border-teal-200/50 hover:border-teal-400 bg-white/80"}`}>
@@ -919,9 +919,10 @@ export function OnboardingForm({ onClose, onComplete }: OnboardingFormProps) {
 
               <RadioGroup value={formData.timeAvailable} onValueChange={(value) => updateFormData("timeAvailable", value)} className="space-y-3">
                 {[
-                  { value: "quick", label: "⚡ 15-30 mins" },
-                  { value: "moderate", label: "⏱️ 30-60 mins" },
-                  { value: "flexible", label: "🕐 60+ mins" },
+                  { value: "under-30", label: "⚡ Under 30 mins" },
+                  { value: "30-60", label: "⏱️ 30–60 mins" },
+                  { value: "over-60", label: "🕐 Over 1 hour" },
+                  { value: "quick-prep", label: "🍴 Prefer quick prep meals" },
                 ].map((option, index) => (
                   <motion.div key={option.value} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + index * 0.05 }} whileHover={{ scale: 1.02, x: 5 }} whileTap={{ scale: 0.98 }}>
                     <Label htmlFor={option.value} className={`flex items-center space-x-3 p-4 rounded-2xl border-2 transition-all cursor-pointer ${formData.timeAvailable === option.value ? "border-teal-500 bg-teal-100 shadow-md" : "border-teal-200/50 hover:border-teal-400 bg-white/80"}`}>
@@ -951,6 +952,7 @@ export function OnboardingForm({ onClose, onComplete }: OnboardingFormProps) {
                   { value: "low", label: "💵 Budget-friendly" },
                   { value: "medium", label: "💰 Moderate" },
                   { value: "high", label: "💎 Premium" },
+                  { value: "flexible", label: "🧾 Flexible / no fixed budget" },
                 ].map((option, index) => (
                   <motion.div key={option.value} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + index * 0.05 }} whileHover={{ scale: 1.02, x: 5 }} whileTap={{ scale: 0.98 }}>
                     <Label htmlFor={option.value} className={`flex items-center space-x-3 p-4 rounded-2xl border-2 transition-all cursor-pointer ${formData.budget === option.value ? "border-teal-500 bg-teal-100 shadow-md" : "border-teal-200/50 hover:border-teal-400 bg-white/80"}`}>

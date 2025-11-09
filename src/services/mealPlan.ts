@@ -62,11 +62,22 @@ export interface MealPlanStatusResponse {
 
 class MealPlanService {
   /**
-   * Generate a new 7-day meal plan
+   * Generate a new 7-day meal plan (async with task tracking)
    */
   async generateMealPlan(request: GenerateMealPlanRequest): Promise<MealPlanStatusResponse> {
     const response = await apiClient.post<MealPlanStatusResponse>(
       '/meal-plans/generate',
+      request
+    );
+    return response.data;
+  }
+
+  /**
+   * Regenerate a new 7-day meal plan synchronously (instant)
+   */
+  async regenerateMealPlan(request: GenerateMealPlanRequest): Promise<MealPlan> {
+    const response = await apiClient.post<MealPlan>(
+      '/meal-plans/regenerate',
       request
     );
     return response.data;
