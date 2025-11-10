@@ -11,10 +11,10 @@ const navLinks = [
 ];
 
 interface HeaderProps {
-  onSignUpClick: () => void;
+  onSignInClick: () => void;
 }
 
-export function Header({ onSignUpClick }: HeaderProps) {
+export function Header({ onSignInClick }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -96,8 +96,8 @@ export function Header({ onSignUpClick }: HeaderProps) {
 
           {/* Desktop CTA Buttons */}
           <div className="hidden md:flex items-center gap-4">
-            <Button 
-              onClick={onSignUpClick}
+            <Button
+              onClick={onSignInClick}
               className="bg-green-600 hover:bg-green-700 rounded-full"
             >
               Sign In
@@ -135,9 +135,9 @@ export function Header({ onSignUpClick }: HeaderProps) {
                   </a>
                 ))}
                 <div className="pt-4 space-y-2">
-                  <Button 
+                  <Button
                     onClick={() => {
-                      onSignUpClick();
+                      onSignInClick();
                       setMobileMenuOpen(false);
                     }}
                     className="w-full bg-green-600 hover:bg-green-700"

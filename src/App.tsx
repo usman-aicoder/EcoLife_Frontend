@@ -145,7 +145,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen">
-      <Header onSignUpClick={() => setShowSignUpForm(true)} />
+      <Header onSignInClick={() => setShowSignInForm(true)} />
       <Hero onStartJourney={() => setShowOnboardingForm(true)} />
       <OurMission />
       <ImpactStats />
